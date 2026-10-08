@@ -1,0 +1,62 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<%- include('../partials/flash') %>
+
+<main class="container-fluid px-4 py-4">
+  <div class="card axiom-card mx-auto form-shell">
+    <div class="card-body p-4 p-lg-5">
+      <div class="mb-4">
+        <p class="eyebrow mb-1"><%= entityLabel %> record</p>
+        <h1 class="h3 fw-bold mb-0"><%= title %></h1>
+      </div>
+
+      <% if (errors && errors.length) { %>
+        <div class="alert alert-danger">
+          <ul class="mb-0 ps-3">
+            <% errors.forEach((error) => { %>
+              <li><%= error %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
+
+      <form method="post" action="<%= action %>">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="row g-3">
+          <% fields.forEach((field) => { %>
+            <div class="col-12 <%= field.type === 'textarea' ? 'col-lg-12' : 'col-lg-6' %>">
+              <label class="form-label"><%= field.label %></label>
+              <% if (field.type === 'textarea') { %>
+                <textarea class="form-control" name="<%= field.name %>" rows="4" <%= field.required ? 'required' : '' %>><%= field.value || '' %></textarea>
+              <% } else if (field.type === 'select') { %>
+                <select class="form-select" name="<%= field.name %>" <%= field.required ? 'required' : '' %>>
+                  <% field.options.forEach((option) => { %>
+                    <option value="<%= option.value %>" <%= String(option.value) === String(field.value || '') ? 'selected' : '' %>><%= option.label %></option>
+                  <% }) %>
+                </select>
+              <% } else { %>
+                <input
+                  class="form-control"
+                  type="<%= field.type || 'text' %>"
+                  name="<%= field.name %>"
+                  value="<%= field.value || '' %>"
+                  <%= field.required ? 'required' : '' %>
+                  <%= field.min !== undefined ? `min="${field.min}"` : '' %>
+                  <%= field.max !== undefined ? `max="${field.max}"` : '' %>
+                  <%= field.step ? `step="${field.step}"` : '' %>
+                >
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button class="btn btn-accent" type="submit"><%= submitLabel %></button>
+          <a class="btn btn-outline-secondary" href="<%= cancelPath %>">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

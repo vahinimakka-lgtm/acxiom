@@ -1,0 +1,82 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<%- include('../partials/flash') %>
+
+<main class="container-fluid px-4 py-4">
+  <div class="hero-shell mb-4">
+    <div>
+      <p class="eyebrow mb-1">Security administration</p>
+      <h1 class="display-6 fw-bold mb-2">Users and roles</h1>
+      <p class="text-muted mb-0">Create users, update roles, toggle access, and reset credentials.</p>
+    </div>
+  </div>
+
+  <div class="card axiom-card mb-4">
+    <div class="card-body">
+      <form class="row g-3" method="post" action="<%= createAction %>">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <% createFields.forEach((field) => { %>
+          <div class="col-12 col-md-6 col-xl-3">
+            <label class="form-label"><%= field.label %></label>
+            <% if (field.type === 'select') { %>
+              <select class="form-select" name="<%= field.name %>">
+                <% field.options.forEach((option) => { %>
+                  <option value="<%= option.value %>" <%= option.value === field.value ? 'selected' : '' %>><%= option.label %></option>
+                <% }) %>
+              </select>
+            <% } else { %>
+              <input class="form-control" type="<%= field.type %>" name="<%= field.name %>" value="<%= field.value || '' %>">
+            <% } %>
+          </div>
+        <% }) %>
+        <div class="col-12 col-md-6 col-xl-3 align-self-end">
+          <button class="btn btn-accent w-100" type="submit">Create User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card axiom-card">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Role</th><th>Team</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <% users.forEach((user) => { %>
+            <tr>
+              <td><%= user.name %></td>
+              <td><%= user.email %></td>
+              <td>
+                <form class="d-flex gap-2" method="post" action="/admin/users/<%= user.id %>/role">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <select class="form-select form-select-sm" name="role">
+                    <option <%= user.role === 'Admin' ? 'selected' : '' %>>Admin</option>
+                    <option <%= user.role === 'Manager' ? 'selected' : '' %>>Manager</option>
+                    <option <%= user.role === 'Sales Executive' ? 'selected' : '' %>>Sales Executive</option>
+                  </select>
+                  <button class="btn btn-sm btn-outline-primary" type="submit">Save</button>
+                </form>
+              </td>
+              <td><%= user.team_name || '-' %></td>
+              <td><%= Number(user.is_active) === 1 ? 'Active' : 'Inactive' %></td>
+              <td class="d-flex flex-wrap gap-2">
+                <form method="post" action="/admin/users/<%= user.id %>/toggle">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button class="btn btn-sm btn-outline-secondary" type="submit"><%= Number(user.is_active) === 1 ? 'Deactivate' : 'Activate' %></button>
+                </form>
+                <form class="d-flex gap-2" method="post" action="/admin/users/<%= user.id %>/reset-password">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <input class="form-control form-control-sm" type="password" name="password" placeholder="New password">
+                  <button class="btn btn-sm btn-outline-danger" type="submit">Reset</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

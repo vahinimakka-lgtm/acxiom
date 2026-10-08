@@ -1,0 +1,138 @@
+:root {
+  --axiom-bg: #f4f7fb;
+  --axiom-card: #ffffff;
+  --axiom-ink: #102133;
+  --axiom-muted: #64748b;
+  --axiom-primary: #0f766e;
+  --axiom-primary-dark: #115e59;
+  --axiom-accent: #f59e0b;
+  --axiom-border: rgba(16, 33, 51, 0.08);
+}
+
+body {
+  background:
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.10), transparent 30%),
+    var(--axiom-bg);
+  color: var(--axiom-ink);
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, .navbar-brand, .eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.axiom-nav {
+  background: linear-gradient(90deg, #081725, #0f344f);
+  box-shadow: 0 10px 30px rgba(8, 23, 37, 0.18);
+}
+
+.axiom-card {
+  border: 1px solid var(--axiom-border);
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+.hero-shell {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.14), rgba(15, 23, 42, 0.03));
+  border: 1px solid rgba(15, 118, 110, 0.10);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  color: var(--axiom-primary-dark);
+  font-weight: 700;
+}
+
+.btn-accent {
+  background: var(--axiom-primary);
+  color: #fff;
+  border: none;
+}
+
+.btn-accent:hover {
+  background: var(--axiom-primary-dark);
+  color: #fff;
+}
+
+.metric-card {
+  background: linear-gradient(180deg, #fff, #f9fbfd);
+}
+
+.metric-label {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--axiom-muted);
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.report-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #fff;
+  border: 1px solid var(--axiom-border);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.auth-panel {
+  width: min(100%, 560px);
+}
+
+.form-shell {
+  width: min(100%, 980px);
+}
+
+.table thead th {
+  background: #f8fafc;
+  color: #0f172a;
+  border-bottom: 1px solid var(--axiom-border);
+}
+
+.table > :not(caption) > * > * {
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+.nav-link.active {
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.form-control, .form-select {
+  border-radius: 12px;
+  border-color: rgba(100, 116, 139, 0.25);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: rgba(15, 118, 110, 0.55);
+  box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.14);
+}
+
+@media (max-width: 992px) {
+  .hero-shell {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

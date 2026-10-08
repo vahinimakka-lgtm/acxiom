@@ -1,0 +1,78 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<%- include('../partials/flash') %>
+
+<main class="container-fluid px-4 py-4">
+  <div class="hero-shell mb-4">
+    <div>
+      <p class="eyebrow mb-1"><%= entityLabel %> management</p>
+      <h1 class="display-6 fw-bold mb-2"><%= title %></h1>
+      <p class="text-muted mb-0">Search, filter, and manage the full record lifecycle.</p>
+    </div>
+    <a class="btn btn-accent" href="<%= basePath %>/new"><%= createLabel %></a>
+  </div>
+
+  <div class="card axiom-card mb-4">
+    <div class="card-body">
+      <form class="row g-3" method="get" action="<%= basePath %>">
+        <div class="col-12 col-md-6">
+          <label class="form-label">Search</label>
+          <input class="form-control" type="search" name="q" value="<%= search || '' %>" placeholder="Search records">
+        </div>
+        <% if (filters && Object.prototype.hasOwnProperty.call(filters, 'status')) { %>
+          <div class="col-12 col-md-3">
+            <label class="form-label">Status</label>
+            <input class="form-control" name="status" value="<%= filters.status || '' %>" placeholder="Status filter">
+          </div>
+        <% } %>
+        <% if (filters && Object.prototype.hasOwnProperty.call(filters, 'stage')) { %>
+          <div class="col-12 col-md-3">
+            <label class="form-label">Stage</label>
+            <input class="form-control" name="stage" value="<%= filters.stage || '' %>" placeholder="Stage filter">
+          </div>
+        <% } %>
+        <div class="col-12 col-md-3 align-self-end">
+          <button class="btn btn-primary w-100" type="submit">Apply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card axiom-card">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <% columns.forEach((column) => { %>
+              <th><%= column.label %></th>
+            <% }) %>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!rows.length) { %>
+            <tr><td colspan="<%= columns.length + 1 %>" class="text-center text-muted py-5">No records found.</td></tr>
+          <% } %>
+          <% rows.forEach((row) => { %>
+            <tr>
+              <% columns.forEach((column) => { %>
+                <td><%= column.render ? column.render(row) : row[column.name] %></td>
+              <% }) %>
+              <td><%- rowActions ? rowActions(row) : '' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-3 text-muted small">
+    <span>Page <%= pagination.page %> of <%= pagination.totalPages %></span>
+    <div class="btn-group">
+      <a class="btn btn-outline-secondary btn-sm <%= pagination.page <= 1 ? 'disabled' : '' %>" href="<%= basePath %>?page=<%= pagination.page - 1 %>&q=<%= encodeURIComponent(search || '') %><%= filters && filters.status ? `&status=${encodeURIComponent(filters.status)}` : '' %><%= filters && filters.stage ? `&stage=${encodeURIComponent(filters.stage)}` : '' %>">Previous</a>
+      <a class="btn btn-outline-secondary btn-sm <%= pagination.page >= pagination.totalPages ? 'disabled' : '' %>" href="<%= basePath %>?page=<%= pagination.page + 1 %>&q=<%= encodeURIComponent(search || '') %><%= filters && filters.status ? `&status=${encodeURIComponent(filters.status)}` : '' %><%= filters && filters.stage ? `&stage=${encodeURIComponent(filters.stage)}` : '' %>">Next</a>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

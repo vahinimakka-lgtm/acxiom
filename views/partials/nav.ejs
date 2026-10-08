@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-dark axiom-nav sticky-top">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand fw-bold" href="/dashboard">AxiomCRM</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <% if (currentUser) { %>
+          <li class="nav-item"><a class="nav-link <%= currentPath === '/dashboard' ? 'active' : '' %>" href="/dashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link <%= currentPath.startsWith('/customers') ? 'active' : '' %>" href="/customers">Customers</a></li>
+          <li class="nav-item"><a class="nav-link <%= currentPath.startsWith('/leads') ? 'active' : '' %>" href="/leads">Leads</a></li>
+          <li class="nav-item"><a class="nav-link <%= currentPath.startsWith('/opportunities') ? 'active' : '' %>" href="/opportunities">Opportunities</a></li>
+          <li class="nav-item"><a class="nav-link <%= currentPath.startsWith('/followups') ? 'active' : '' %>" href="/followups">Follow-Ups</a></li>
+          <li class="nav-item"><a class="nav-link <%= currentPath.startsWith('/activities') ? 'active' : '' %>" href="/activities">Activities</a></li>
+          <li class="nav-item"><a class="nav-link <%= currentPath.startsWith('/reports') ? 'active' : '' %>" href="/reports">Reports</a></li>
+          <% if (isAdmin) { %>
+            <li class="nav-item"><a class="nav-link <%= currentPath.startsWith('/admin') ? 'active' : '' %>" href="/admin/users">Admin</a></li>
+          <% } %>
+        <% } %>
+      </ul>
+      <div class="d-flex align-items-center gap-2">
+        <% if (currentUser) { %>
+          <span class="text-white-50 small d-none d-lg-inline"><%= currentUser.name %> · <%= currentUser.role %></span>
+          <form method="post" action="/logout" class="d-inline">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
+          </form>
+        <% } else { %>
+          <a class="btn btn-outline-light btn-sm" href="/login">Login</a>
+          <a class="btn btn-light btn-sm" href="/register">Register</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

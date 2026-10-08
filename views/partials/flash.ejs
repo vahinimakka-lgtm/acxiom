@@ -1,0 +1,9 @@
+<% if (flash && flash.length) { %>
+  <div class="container-fluid px-4 mt-3">
+    <% flash.forEach((item) => { %>
+      <div class="alert alert-<%= item.type === 'error' ? 'danger' : item.type %> shadow-sm" role="alert">
+        <%= item.message %>
+      </div>
+    <% }) %>
+  </div>
+<% } %>

@@ -1,0 +1,101 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+<%- include('partials/flash') %>
+
+<main class="container-fluid px-4 py-4">
+  <div class="hero-shell mb-4">
+    <div>
+      <p class="eyebrow mb-1">Analytics</p>
+      <h1 class="display-6 fw-bold mb-2">Reports</h1>
+      <p class="text-muted mb-0">Operational lists, pipeline summaries, and security activity.</p>
+    </div>
+  </div>
+
+  <section class="row g-4 mb-4">
+    <div class="col-12 col-xl-6">
+      <div class="card axiom-card h-100"><div class="card-body"><h2 class="h5 fw-bold mb-3">Pipeline by stage</h2><canvas id="reportPipelineChart" height="240"></canvas></div></div>
+    </div>
+    <div class="col-12 col-xl-6">
+      <div class="card axiom-card h-100"><div class="card-body"><h2 class="h5 fw-bold mb-3">Lead status</h2><canvas id="leadStatusChart" height="240"></canvas></div></div>
+    </div>
+  </section>
+
+  <section class="card axiom-card mb-4">
+    <div class="card-body">
+      <h2 class="h5 fw-bold mb-3">Quick totals</h2>
+      <div class="row g-3">
+        <% reportRows.forEach((row) => { %>
+          <div class="col-6 col-xl-2">
+            <div class="report-pill"><span><%= row.label %></span><strong><%= row.total %></strong></div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="row g-4 mb-4">
+    <div class="col-12 col-xl-6">
+      <div class="card axiom-card h-100"><div class="card-body"><h2 class="h5 fw-bold mb-3">Customers</h2><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Code</th><th>Name</th><th>Status</th><th>Owner</th></tr></thead><tbody><% customers.forEach((row) => { %><tr><td><%= row.customer_code %></td><td><%= row.name %></td><td><%= row.status %></td><td><%= row.owner_name || '-' %></td></tr><% }) %></tbody></table></div></div></div>
+    </div>
+    <div class="col-12 col-xl-6">
+      <div class="card axiom-card h-100"><div class="card-body"><h2 class="h5 fw-bold mb-3">Leads</h2><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Code</th><th>Name</th><th>Status</th><th>Priority</th></tr></thead><tbody><% leads.forEach((row) => { %><tr><td><%= row.lead_code %></td><td><%= row.name %></td><td><%= row.status %></td><td><%= row.priority %></td></tr><% }) %></tbody></table></div></div></div>
+    </div>
+  </section>
+
+  <section class="row g-4 mb-4">
+    <div class="col-12 col-xl-6">
+      <div class="card axiom-card h-100"><div class="card-body"><h2 class="h5 fw-bold mb-3">Opportunities</h2><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Code</th><th>Name</th><th>Stage</th><th>Amount</th></tr></thead><tbody><% opportunities.forEach((row) => { %><tr><td><%= row.opportunity_code %></td><td><%= row.name %></td><td><%= row.stage %></td><td><%= formatMoney(row.amount) %></td></tr><% }) %></tbody></table></div></div></div>
+    </div>
+    <div class="col-12 col-xl-6">
+      <div class="card axiom-card h-100"><div class="card-body"><h2 class="h5 fw-bold mb-3">Follow-ups</h2><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Code</th><th>Subject</th><th>Date</th><th>Status</th></tr></thead><tbody><% followups.forEach((row) => { %><tr><td><%= row.followup_code %></td><td><%= row.subject %></td><td><%= row.follow_up_date %></td><td><%= row.status %></td></tr><% }) %></tbody></table></div></div></div>
+    </div>
+  </section>
+
+  <% if (showAudit) { %>
+    <section class="card axiom-card mb-4">
+      <div class="card-body">
+        <h2 class="h5 fw-bold mb-3">Audit log</h2>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead><tr><th>When</th><th>User</th><th>Module</th><th>Action</th><th>Entity</th></tr></thead>
+            <tbody>
+              <% auditLogs.forEach((row) => { %>
+                <tr>
+                  <td><%= row.created_at %></td>
+                  <td><%= row.user_name || 'System' %></td>
+                  <td><%= row.module %></td>
+                  <td><%= row.action %></td>
+                  <td><%= row.entity_name %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  <% } %>
+</main>
+
+<script>
+  const pipelineData = <%- JSON.stringify(pipeline) %>;
+  const leadStatusData = <%- JSON.stringify(leadStatus) %>;
+  if (window.Chart) {
+    new Chart(document.getElementById('reportPipelineChart'), {
+      type: 'doughnut',
+      data: {
+        labels: pipelineData.map((row) => row.stage),
+        datasets: [{ data: pipelineData.map((row) => row.totalAmount), backgroundColor: ['#0f766e', '#1d4ed8', '#f59e0b', '#dc2626', '#0369a1'] }],
+      },
+    });
+    new Chart(document.getElementById('leadStatusChart'), {
+      type: 'bar',
+      data: {
+        labels: leadStatusData.map((row) => row.status),
+        datasets: [{ label: 'Leads', data: leadStatusData.map((row) => row.totalCount), backgroundColor: '#1d4ed8' }],
+      },
+      options: { plugins: { legend: { display: false } } },
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>

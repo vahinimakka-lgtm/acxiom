@@ -1,0 +1,112 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+<%- include('partials/flash') %>
+
+<main class="container-fluid px-4 py-4">
+  <section class="hero-shell mb-4">
+    <div>
+      <p class="eyebrow mb-1">Welcome back</p>
+      <h1 class="display-6 fw-bold mb-2">AxiomCRM dashboard</h1>
+      <p class="text-muted mb-0">Operational view of customers, sales, and scheduled follow-up work.</p>
+    </div>
+  </section>
+
+  <section class="row g-3 mb-4">
+    <% metrics.forEach((metric) => { %>
+      <div class="col-6 col-xl-3">
+        <div class="card axiom-card metric-card h-100">
+          <div class="card-body">
+            <p class="metric-label mb-1"><%= metric.label %></p>
+            <div class="metric-value"><%= metric.value %></div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </section>
+
+  <section class="row g-4 mb-4">
+    <div class="col-12 col-xl-6">
+      <div class="card axiom-card h-100">
+        <div class="card-body">
+          <h2 class="h5 fw-bold mb-3">Pipeline value</h2>
+          <canvas id="pipelineChart" height="260"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-xl-6">
+      <div class="card axiom-card h-100">
+        <div class="card-body">
+          <h2 class="h5 fw-bold mb-3">Upcoming follow-ups</h2>
+          <div class="list-group list-group-flush">
+            <% if (!upcomingFollowups.length) { %>
+              <div class="text-muted">Nothing scheduled.</div>
+            <% } %>
+            <% upcomingFollowups.forEach((item) => { %>
+              <div class="list-group-item px-0 bg-transparent border-0">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <div class="fw-semibold"><%= item.subject %></div>
+                    <div class="text-muted small"><%= item.related_type %> #<%= item.related_id %> · <%= item.assignee_name || 'Unassigned' %></div>
+                  </div>
+                  <span class="badge text-bg-light"><%= item.follow_up_date %></span>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card axiom-card">
+    <div class="card-body">
+      <h2 class="h5 fw-bold mb-3">Recent activities</h2>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead>
+            <tr><th>Code</th><th>Subject</th><th>Date</th><th>Status</th><th>Assigned To</th></tr>
+          </thead>
+          <tbody>
+            <% recentActivities.forEach((item) => { %>
+              <tr>
+                <td><%= item.activity_code %></td>
+                <td><%= item.subject %></td>
+                <td><%= item.activity_date %></td>
+                <td><%= item.status %></td>
+                <td><%= item.assignee_name || 'Unassigned' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const pipelineData = <%- JSON.stringify(pipelineChart) %>;
+  const canvas = document.getElementById('pipelineChart');
+  if (canvas && window.Chart) {
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: pipelineData.labels,
+        datasets: [{
+          label: 'Pipeline Value',
+          data: pipelineData.values,
+          backgroundColor: ['#0f766e', '#1d4ed8', '#f59e0b', '#dc2626', '#0369a1'],
+          borderRadius: 10,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { callback: (value) => '$' + value.toLocaleString() } },
+        },
+      },
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>
